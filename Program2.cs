@@ -10,21 +10,10 @@ namespace SoloLearn2
     class Program2
     {
         enum CoinCompartmentsType { Penny, Nickel, Dime, Quarter, One, Five, Ten, Twenty, Fifty, OneHundred }
-
-        private class CoinCompartment
+      
+        private static class CashDrawerDefination
         {
-            decimal HoldValue { get; set; }
-            CoinCompartmentsType CoinCompartmentType { get; set; }
-            public CoinCompartment(CoinCompartmentsType coinCompartmentType, decimal holdValue)
-            {
-                this.CoinCompartmentType = coinCompartmentType;
-                this.HoldValue = holdValue;
-            }
-        }
-
-        private class CashRegister
-        {
-            private readonly Dictionary<CoinCompartmentsType, decimal> CashDrawerDefination = new Dictionary<CoinCompartmentsType, decimal>
+            private static readonly Dictionary<CoinCompartmentsType, decimal> Defination = new Dictionary<CoinCompartmentsType, decimal>
             {
                 { CoinCompartmentsType.Penny,     0.01m },
                 { CoinCompartmentsType.Nickel,    0.05m },
@@ -38,7 +27,15 @@ namespace SoloLearn2
                 { CoinCompartmentsType.OneHundred, 100m }
             };
 
-            private readonly Dictionary<CoinCompartmentsType, decimal> CashDrawerValues;
+            public static decimal GetValue(CoinCompartmentsType coinCompartmentsType)
+            {
+                return Defination[coinCompartmentsType];
+            }
+        }
+
+        private class CashRegister
+        {
+            public readonly Dictionary<CoinCompartmentsType, decimal> CashDrawerValues;
 
             public CashRegister(Dictionary<CoinCompartmentsType, decimal> cashDrawerValues)
             {
@@ -46,38 +43,10 @@ namespace SoloLearn2
             }
         }
 
-        static readonly Dictionary<CoinCompartmentsType, decimal> CashDrawer = new Dictionary<CoinCompartmentsType, decimal>
-        {
-            { CoinCompartmentsType.Penny,     0.01m },
-            { CoinCompartmentsType.Nickel,    0.05m },
-            { CoinCompartmentsType.Dime,      0.10m },
-            { CoinCompartmentsType.Quarter,   0.25m },
-            { CoinCompartmentsType.One,          1m },
-            { CoinCompartmentsType.Five,         5m },
-            { CoinCompartmentsType.Ten,         10m },
-            { CoinCompartmentsType.Twenty,      20m },
-            { CoinCompartmentsType.Fifty,       50m },
-            { CoinCompartmentsType.OneHundred, 100m }
-        };
-
-        static readonly Dictionary<CoinCompartmentsType, CoinCompartment> CashDrawer2 = new Dictionary<CoinCompartmentsType, CoinCompartment>
-        {
-            { CoinCompartmentsType.Penny,      new CoinCompartment( CoinCompartmentsType.Penny,    0.01m) },
-            { CoinCompartmentsType.Nickel,     new CoinCompartment( CoinCompartmentsType.Nickel,   0.05m) },
-            { CoinCompartmentsType.Dime,       new CoinCompartment( CoinCompartmentsType.Dime,     0.10m) },
-            { CoinCompartmentsType.Quarter,    new CoinCompartment( CoinCompartmentsType.Quarter,  0.25m) },
-            { CoinCompartmentsType.One,        new CoinCompartment( CoinCompartmentsType.One,         1m) },
-            { CoinCompartmentsType.Five,       new CoinCompartment( CoinCompartmentsType.Five,        5m) },
-            { CoinCompartmentsType.Ten,        new CoinCompartment( CoinCompartmentsType.Ten,        10m) },
-            { CoinCompartmentsType.Twenty,     new CoinCompartment( CoinCompartmentsType.Twenty,     20m) },
-            { CoinCompartmentsType.Fifty,      new CoinCompartment( CoinCompartmentsType.Fifty,      50m) },
-            { CoinCompartmentsType.OneHundred, new CoinCompartment( CoinCompartmentsType.OneHundred,100m) }
-        };
-
         static void Main(string[] args)
         {
             Console.Write("Case 1: ");
-            Console.WriteLine(CheckCashRegister(3.26m, 100m, new Dictionary<CoinCompartmentsType, decimal>
+            var cashRegiter1 = new CashRegister(new Dictionary<CoinCompartmentsType, decimal>
             {
                 { CoinCompartmentsType.Penny,     1.01m },
                 { CoinCompartmentsType.Nickel,    2.05m },
@@ -89,9 +58,12 @@ namespace SoloLearn2
                 { CoinCompartmentsType.Twenty,      60m },
                 { CoinCompartmentsType.Fifty,       50m },
                 { CoinCompartmentsType.OneHundred, 100m }
-            }));
+            });
+
+            Console.WriteLine(CheckCashRegister(3.26m, 100m, cashRegiter1));
             Console.Write("Case 2: ");
-            Console.WriteLine(CheckCashRegister(19.50m, 20m, new Dictionary<CoinCompartmentsType, decimal>
+
+            var cashRegister2 = new CashRegister(new Dictionary<CoinCompartmentsType, decimal>
             {
                 { CoinCompartmentsType.Penny,  0.01m },
                 { CoinCompartmentsType.Nickel,     0 },
@@ -103,9 +75,12 @@ namespace SoloLearn2
                 { CoinCompartmentsType.Twenty,     0 },
                 { CoinCompartmentsType.Fifty,    50m },
                 { CoinCompartmentsType.OneHundred, 0 }
-            }));
+            });
+
+            Console.WriteLine(CheckCashRegister(19.50m, 20m, cashRegister2));
             Console.Write("Case 3: ");
-            Console.WriteLine(CheckCashRegister(19.50m, 70m, new Dictionary<CoinCompartmentsType, decimal>
+
+            var cashRegister3 = new CashRegister(new Dictionary<CoinCompartmentsType, decimal>
             {
                 { CoinCompartmentsType.Penny,  0.50m },
                 { CoinCompartmentsType.Nickel,     0 },
@@ -117,19 +92,21 @@ namespace SoloLearn2
                 { CoinCompartmentsType.Twenty,   20m },
                 { CoinCompartmentsType.Fifty,      0 },
                 { CoinCompartmentsType.OneHundred, 0 }
-            }));
+            });
+
+            Console.WriteLine(CheckCashRegister(19.50m, 70m, cashRegister3));
 
             Console.ReadKey();
         }
 
-        static string CheckCashRegister(decimal itemPrice, decimal cash, Dictionary<CoinCompartmentsType, decimal> cashInDrawer)
+        static string CheckCashRegister(decimal itemPrice, decimal cash, CashRegister cashInDrawer)
         {
             var changeAmount = cash - itemPrice;
-            List<KeyValuePair<CoinCompartmentsType, decimal>> changeDue = GetChangeDue(cashInDrawer, ref changeAmount);
+            List<KeyValuePair<CoinCompartmentsType, decimal>> changeDue = GetChangeDue(cashInDrawer.CashDrawerValues, ref changeAmount);
 
             return changeAmount != 0 ? // failed to fully pay the changeAmount?
                     "Insufficient Funds" :
-                   cashInDrawer.Sum(c => c.Value) == 0 ? // any remaining cash in drawer?
+                   cashInDrawer.CashDrawerValues.Sum(c => c.Value) == 0 ? // any remaining cash in drawer?
                     "Closed" :
                     string.Join(", ", changeDue.Where(c => c.Value != 0));
         }
@@ -138,34 +115,34 @@ namespace SoloLearn2
         {
             return new List<KeyValuePair<CoinCompartmentsType, decimal>>
             {
-                PayoutChange(changeAmount, CoinCompartmentsType.OneHundred, cashInDrawer, out changeAmount),
-                PayoutChange(changeAmount, CoinCompartmentsType.Fifty, cashInDrawer, out changeAmount),
-                PayoutChange(changeAmount, CoinCompartmentsType.Twenty, cashInDrawer, out changeAmount),
-                PayoutChange(changeAmount, CoinCompartmentsType.Ten, cashInDrawer, out changeAmount),
-                PayoutChange(changeAmount, CoinCompartmentsType.Five, cashInDrawer, out changeAmount),
-                PayoutChange(changeAmount, CoinCompartmentsType.One, cashInDrawer, out changeAmount),
-                PayoutChange(changeAmount, CoinCompartmentsType.Quarter, cashInDrawer, out changeAmount),
-                PayoutChange(changeAmount, CoinCompartmentsType.Dime, cashInDrawer, out changeAmount),
-                PayoutChange(changeAmount, CoinCompartmentsType.Nickel, cashInDrawer, out changeAmount),
-                PayoutChange(changeAmount, CoinCompartmentsType.Penny, cashInDrawer, out changeAmount)
+                Payout(changeAmount, CoinCompartmentsType.OneHundred, cashInDrawer, out changeAmount),
+                Payout(changeAmount, CoinCompartmentsType.Fifty, cashInDrawer, out changeAmount),
+                Payout(changeAmount, CoinCompartmentsType.Twenty, cashInDrawer, out changeAmount),
+                Payout(changeAmount, CoinCompartmentsType.Ten, cashInDrawer, out changeAmount),
+                Payout(changeAmount, CoinCompartmentsType.Five, cashInDrawer, out changeAmount),
+                Payout(changeAmount, CoinCompartmentsType.One, cashInDrawer, out changeAmount),
+                Payout(changeAmount, CoinCompartmentsType.Quarter, cashInDrawer, out changeAmount),
+                Payout(changeAmount, CoinCompartmentsType.Dime, cashInDrawer, out changeAmount),
+                Payout(changeAmount, CoinCompartmentsType.Nickel, cashInDrawer, out changeAmount),
+                Payout(changeAmount, CoinCompartmentsType.Penny, cashInDrawer, out changeAmount)
             };
         }
 
-        static KeyValuePair<CoinCompartmentsType, decimal> PayoutChange(
+        static KeyValuePair<CoinCompartmentsType, decimal> Payout(
             decimal changeAmount,
             CoinCompartmentsType compartmentType,
-            Dictionary<CoinCompartmentsType, decimal> cashInDrawer,
+            Dictionary<CoinCompartmentsType, decimal> cashValueInDrawer,
             out decimal remainingChange)
         {
             remainingChange = changeAmount;
 
-            bool IsDueByThisCoinCompartment = CashDrawer[compartmentType] > changeAmount;
+            bool IsDueByThisCoinCompartment = CashDrawerDefination.GetValue(compartmentType) > changeAmount;
             if (IsDueByThisCoinCompartment) return new KeyValuePair<CoinCompartmentsType, decimal>(compartmentType, 0);
 
-            var quantity = Math.Floor(changeAmount / CashDrawer[compartmentType]);
-            var cashValue = Math.Min(quantity * CashDrawer[compartmentType], cashInDrawer[compartmentType]);
+            var quantity = Math.Floor(changeAmount / CashDrawerDefination.GetValue(compartmentType));
+            var cashValue = Math.Min(quantity * CashDrawerDefination.GetValue(compartmentType), cashValueInDrawer[compartmentType]);
 
-            cashInDrawer[compartmentType] -= cashValue;
+            cashValueInDrawer[compartmentType] -= cashValue;
             remainingChange = changeAmount - cashValue;
 
             return new KeyValuePair<CoinCompartmentsType, decimal>(compartmentType, cashValue);
